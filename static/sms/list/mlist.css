@@ -210,3 +210,17 @@ body {
   clear: both;
   height: 0;
 }
+
+.alert-fraud {
+  padding: 20px;
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}
+
+.alert-spam {
+  padding: 20px;
+  background-color: orange; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}

@@ -210,3 +210,19 @@ body {
   clear: both;
   height: 0;
 }
+
+.alert-fraud {
+  padding: 4px;
+  text-align: center;
+  background-color: #f44336; /* Red */
+  color: white;
+  /* margin-bottom: 15px; */
+}
+
+.alert-spam {
+  padding: 4px;
+  text-align: center;
+  background-color: orange; /* Red */
+  color: white;
+  /* margin-bottom: 15px; */
+}
