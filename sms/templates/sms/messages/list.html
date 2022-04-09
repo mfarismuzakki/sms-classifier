@@ -2,165 +2,120 @@
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'sms/list/mlist.css' %}">
+<style>
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: white;
+        opacity: 1; /* Firefox */
+      }
+</style>
 {% endblock %}
+
+{% load sms_filter %}
 
 {% block content %}
 <div class="container clearfix">
     <div class="people-list" id="people-list">
         <div class="search">
-        <input type="text" placeholder="search" />
+        <input type="text" style="color:white" placeholder="search" />
         <i class="fa fa-search"></i>
     </div>
+
+    <center>
+        <a class="button" href="{% url 'sms:sms-list' %}?user_id={{request.GET.user_id}}"> New Message </a>
+    </center>
+
     <ul class="list">
-        <li class="clearfix">
-            <div class="about">
-                <div class="name">+62811230897214</div>
-                <div class="status">
-                    <i class="fa fa-circle online"></i> 
-                </div>
-            </div>
-        </li>
-        
-        <li class="clearfix">
-            <div class="about">
-            <div class="name">+62289471293982</div>
-            <div class="status">
+        {% for number in phone_number_list %}
+        <li class="clearfix" style="border-style: outset;">
+            {% if number.type == 1 %}
                 <div class="alert-fraud">
-                    FRAUD
+                    Fraud
                 </div>
-                <!-- <i class="fa fa-circle offline"></i> SPAM -->
-            </div>
-          </div>
-        </li>
-        
-        <li class="clearfix">
-            <div class="about">
-            <div class="name">621289479232342</div>
-            <div class="status">
-                <div class="alert-spam">
-                    SPAM
+            {% endif %}
+            
+            {% if number.type == 2 %}
+                <div class="alert-ad">
+                    Ad
                 </div>
-            </div>
-        </div>
+            {% endif %}
+
+            <a href="{% url 'sms:sms-list' %}?user_id={{request.GET.user_id}}&target_id={{number.user_id}}" style="color:white">
+                <div class="about">
+                    <div class="name">{{number.phone_number}}</div>
+                    {{number.create_dt}}
+                    <p>{{number.message|message_summary}}</p>
+                </div>
+            </a>
         </li>
-    
-        
+        {% endfor %}
     </ul>
 </div>
 
 <div class="chat">
     <div class="chat-header clearfix">
         
+        {% if target_number != '' %}
         <div class="chat-about">
-            <div class="chat-with">62811230897214</div>
-            <div class="chat-num-messages">already 12 messages</div>
+            <div class="chat-with">{{target_number}}</div>
+            <div class="chat-num-messages">already {{sms_list|length}} messages</div>
         </div>
         <i class="fa fa-star"></i>
     </div> <!-- end chat-header -->
     
     <div class="chat-history">
         <ul>
-            <li class="clearfix">
-                <div class="message-data align-right">
-                    <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
-                    <span class="message-data-name" >Receiver</span> <i class="fa fa-circle me"></i>
-                    
-                </div>
-            <div class="message other-message float-right">
-                Save nomor aku ya, ini jalaluddin.
-            </div>
-        </li>
-        
-        <li>
-            <div class="message-data">
-                <span class="message-data-name"><i class="fa fa-circle online"></i> receiver</span>
-                <span class="message-data-time">10:12 AM, Today</span>
-            </div>
-            <div class="message my-message">
-                Besok kuliah engga ya?.
-            </div>
-        </li>
-        
-        <li class="clearfix">
-            <div class="message-data align-right">
-                <span class="message-data-time" >10:14 AM, Today</span> &nbsp; &nbsp;
-                <span class="message-data-name" >Me</span> <i class="fa fa-circle me"></i>
-                
-            </div>
-            <div class="message other-message float-right">
-                Kuliah kayaknyamah, hehehe
-            </div>
-        </li>
-        
-        <li>
-            <div class="message-data">
-              <span class="message-data-name"><i class="fa fa-circle online"></i> Receiver</span>
-              <span class="message-data-time">10:20 AM, Today</span>
-            </div>
-            <div class="message my-message">
-              Aaah yang betul?
-            </div>
-          </li>
-          
-          <li>
-              <div class="message-data">
-              <span class="message-data-name"><i class="fa fa-circle online"></i> Receiver</span>
-              <span class="message-data-time">10:31 AM, Today</span>
-            </div>
-            <div class="message my-message">
-                Bales cok :(
-            </div>
-            <i class="fa fa-circle online"></i>
-            <i class="fa fa-circle online" style="color: #AED2A6"></i>
-            <i class="fa fa-circle online" style="color:#DAE9DA"></i>
-          </li>
-          
-        </ul>
-        
+            {% for message in sms_list %}
+                {% if message.sender == 0 %}
+                <li class="clearfix">
+                    <div class="message-data align-right">
+                        <span class="message-data-time" >{{message.create_dt}}</span> &nbsp; &nbsp;
+                        <span class="message-data-name" >me</span> <i class="fa fa-circle me"></i>
+                    </div>
+                    <div class="message other-message float-right">
+                        {{message.message}}
+                    </div>
+                </li>
+                {% else %}
+                <li>
+                    <div class="message-data">
+                        <span class="message-data-name"><i class="fa fa-circle online"></i>Him/Her</span>
+                        <span class="message-data-time">{{message.create_dt}}</span>
+                    </div>
+                    <div class="message my-message">
+                        {{message.message}}
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
     </div> <!-- end chat-history -->
+    {% endif %}
       
-    <div class="chat-message clearfix">
-        <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="chat-message clearfix">
+            {% if target_number == '' %}
+                Recipient : <input id="recipient" name="recipient" placeholder ="Type your message" rows="3"></input>
+            {% else %}
+                <input type="hidden" id="recipient" name="recipient" value="{{target_number}}" placeholder ="Type your message" rows="3"></input>
+            {% endif %}
+            <textarea name="message" id="message" placeholder ="Type your message" rows="3"></textarea>
+            
+            <input id="btn_submit" type="submit" value="kirim"></input>
+        </div> <!-- end chat-message -->
+    </form>
         
-        <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
-        <i class="fa fa-file-image-o"></i>
-        
-        <button>Send</button>
-        
-    </div> <!-- end chat-message -->
     
 </div> <!-- end chat -->
     
 </div> <!-- end container -->
 
-<script id="message-template" type="text/x-handlebars-template">
-    <li class="clearfix">
-        <div class="message-data align-right">
-            <span class="message-data-time" >{{time}}, Today</span> &nbsp; &nbsp;
-            <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
-        </div>
-        <div class="message other-message float-right">
-            {{messageOutput}}
-        </div>
-    </li>
-</script>
-
-<script id="message-response-template" type="text/x-handlebars-template">
-    <li>
-        <div class="message-data">
-            <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-            <span class="message-data-time">{{time}}, Today</span>
-        </div>
-        <div class="message my-message">
-            {{response}}
-        </div>
-    </li>
-</script>
 {% endblock %}
 
 {% block script %}
 <script src="{% static 'sms/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'sms/listjs/list.min.js' %}"></script>
 <script src="{% static 'sms/list/mlist.js' %}"></script>
+<script src="{% static 'sms/list/messageform.js' %}"></script>
 {% endblock %}
 

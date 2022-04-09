@@ -68,3 +68,6 @@ running the server
 ```sh
 python manage.py runserver
 ```
+<!--  -->
+## Database Design
+![Database](static/images/database.png)

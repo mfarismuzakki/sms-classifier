@@ -7,12 +7,11 @@ from user.models import User
 class SmsClass(models.Model):
     CLASS_CHOICES = {
         (1, 'Personal'),
-        (2, 'Advertisement'),
-        (3, 'Fraud'),
+        (2, 'Fraud'),
+        (3, 'Advertisement'),
     }
 
     type = models.IntegerField(choices = CLASS_CHOICES) 
-
 
 class Sms(Template, models.Model):
     sender = models.ForeignKey(User,
