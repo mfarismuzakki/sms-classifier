@@ -3,13 +3,13 @@ import os
 from django.views.generic import View
 from django.db.models import Q
 from django.utils import timezone
-# from tensorflow import keras
 
 from user.models import *
 from sms.models import *
-# from sms.utils.ml_utils import * 
+from sms.utils.ml_utils import * 
 
-# from keras.models import Model, model_from_json
+import pickle
+
 
 class SmsApi(View):
 
@@ -151,27 +151,9 @@ class SmsApi(View):
         1 : fraud
         2 : ad
         """
-        # message = get_text(message)
-        # model = cls.get_ml_model()
-        # result = model.predict(message)
+        django_path = os.path.abspath(os.path.dirname(__name__))
+        message = get_text(message)
+        model = pickle.load(open(django_path + '/ml-model/xgb.pkl', 'rb'))
+        result = model.predict(message)[0]
 
-        # print(result)
-
-        return 0
-
-    @classmethod
-    def get_ml_model(cls):
-        pass
-        # django_path = os.path.abspath(os.path.dirname(__name__))
-        # model_path = os.path.join(django_path, 'ml-model\model.h5')
-        # arc_path = os.path.join(django_path, 'ml-model\model.json')
-        
-        # json_file = open(arc_path, 'r')
-        # loaded_model_json = json_file.read()
-        # json_file.close()
-        # print("manataaaaaap")
-        # print(loaded_model_json)
-        # loaded_model = model_from_json(loaded_model_json)
-        # loaded_model.load_weights(model_path)
-
-        # return loaded_model
+        return result
