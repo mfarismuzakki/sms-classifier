@@ -7,6 +7,9 @@
         color: white;
         opacity: 1; /* Firefox */
       }
+    ul {
+        list-style-type: none;
+    }
 </style>
 {% endblock %}
 
@@ -26,26 +29,28 @@
 
     <ul class="list">
         {% for number in phone_number_list %}
-        <li class="clearfix" style="border-style: outset;">
-            {% if number.type == 1 %}
+        <li class="card clearfix">
+            {% comment %} <div class="card"> {% endcomment %}
+                {% if number.type == 1 %}
                 <div class="alert-fraud">
                     Fraud
                 </div>
-            {% endif %}
-            
-            {% if number.type == 2 %}
+                {% endif %}
+                
+                {% if number.type == 2 %}
                 <div class="alert-ad">
                     Ad
                 </div>
-            {% endif %}
-
-            <a href="{% url 'sms:sms-list' %}?user_id={{request.GET.user_id}}&target_id={{number.user_id}}" style="color:white">
-                <div class="about">
-                    <div class="name">{{number.phone_number}}</div>
-                    {{number.create_dt}}
-                    <p>{{number.message|message_summary}}</p>
-                </div>
-            </a>
+                {% endif %}
+                
+                <a href="{% url 'sms:sms-list' %}?user_id={{request.GET.user_id}}&target_id={{number.user_id}}" style="color:white">
+                    <div class="about">
+                        <div class="name">{{number.phone_number}}</div>
+                        {{number.create_dt}}
+                        <p>{{number.message|message_summary}}</p>
+                    </div>
+                </a>
+            {% comment %} </div> {% endcomment %}
         </li>
         {% endfor %}
     </ul>
@@ -95,13 +100,13 @@
         {% csrf_token %}
         <div class="chat-message clearfix">
             {% if target_number == '' %}
-                Recipient : <input id="recipient" name="recipient" placeholder ="Type your message" rows="3"></input>
+                Recipient : <input id="recipient" type="text" name="recipient" placeholder ="Type your message" rows="3"></input>
             {% else %}
-                <input type="hidden" id="recipient" name="recipient" value="{{target_number}}" placeholder ="Type your message" rows="3"></input>
+                <input type="hidden" type="text" id="recipient" name="recipient" value="{{target_number}}" placeholder ="Type your message" rows="3"></input>
             {% endif %}
             <textarea name="message" id="message" placeholder ="Type your message" rows="3"></textarea>
             
-            <input id="btn_submit" type="submit" value="kirim"></input>
+            <input id="btn_submit" class="button-send" type="submit" value="kirim"></input>
         </div> <!-- end chat-message -->
     </form>
         

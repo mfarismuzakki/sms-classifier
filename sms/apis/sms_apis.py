@@ -1,11 +1,18 @@
+import os
+
 from django.views.generic import View
 from django.db.models import Q
 from django.utils import timezone
+# from tensorflow import keras
 
 from user.models import *
 from sms.models import *
+# from sms.utils.ml_utils import * 
+
+# from keras.models import Model, model_from_json
 
 class SmsApi(View):
+
     @classmethod
     def get_group_list(cls, user_id, target_id):
         """
@@ -120,11 +127,14 @@ class SmsApi(View):
             .filter(phone_number = recipient_number) \
             .first()
 
+        message_type = cls.predict_message(message)
+        message_type += 1
+
         new_message_data = Sms(
             message = message,
             recipient = recipient,
             sender_id = sender_id,
-            type_id = 1,
+            type_id =  message_type,
             create_dt = timezone.now()
         )
 
@@ -134,5 +144,34 @@ class SmsApi(View):
     
 
     @classmethod
-    def predict_message(cls):
+    def predict_message(cls, message):
+        """
+        mendapatkan prediksi type message
+        0 : personal
+        1 : fraud
+        2 : ad
+        """
+        # message = get_text(message)
+        # model = cls.get_ml_model()
+        # result = model.predict(message)
+
+        # print(result)
+
+        return 0
+
+    @classmethod
+    def get_ml_model(cls):
         pass
+        # django_path = os.path.abspath(os.path.dirname(__name__))
+        # model_path = os.path.join(django_path, 'ml-model\model.h5')
+        # arc_path = os.path.join(django_path, 'ml-model\model.json')
+        
+        # json_file = open(arc_path, 'r')
+        # loaded_model_json = json_file.read()
+        # json_file.close()
+        # print("manataaaaaap")
+        # print(loaded_model_json)
+        # loaded_model = model_from_json(loaded_model_json)
+        # loaded_model.load_weights(model_path)
+
+        # return loaded_model

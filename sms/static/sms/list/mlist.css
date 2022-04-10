@@ -213,6 +213,7 @@ body {
 
 .alert-fraud {
   padding: 4px;
+  width: 30%;
   text-align: center;
   background-color: #f44336; /* Red */
   color: white;
@@ -221,6 +222,7 @@ body {
 
 .alert-ad {
   padding: 4px;
+  width: 30%;
   text-align: center;
   background-color: orange; /* Red */
   color: white;
@@ -231,9 +233,37 @@ body {
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 10px 15px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
+}
+
+.button-send {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+}
+
+
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(2, 0, 0, 0.2);
+  padding: 16px;
+}
+
+input[type=text], select {
+  width: 82.5%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
